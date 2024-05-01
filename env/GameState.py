@@ -158,8 +158,16 @@ class GameState:
             next_index = self.B.board_format[action]
             self.B.board[next_index] += 1  # drop one seed in the next pit
 
-        # After all seeds are distributed, check if it's time to capture seeds
-        self.capture_seeds(action, current_player, other_player)
+            # After all seeds are distributed, check if it's time to capture seeds
+            if self.B.turns_completed > 1:
+                self.capture_seeds(action,  current_player, other_player)
+
+                if np.sum(self.B.board) < 4:
+                    self.B.board = np.zeros((self.B.nrows, self.B.ncols))
+                    break
+
+            if seeds == 0:    
+                self.capture_seeds(action,  current_player, other_player,during_game=False)
 
         self.B.turns_completed += 1  # increment the turn counter
         return next_index
